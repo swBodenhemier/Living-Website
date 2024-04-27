@@ -1,9 +1,9 @@
 REM MySQL Connection Details
-set DB_HOST=
+set DB_HOST=mysql.ac.nau.edu
 set DB_PORT=3306
-set DB_USER=
-set DB_PASS=
-set DB_NAME=
+set DB_USER=livingwebsite
+set DB_PASS=Vv_dckUVIn
+set DB_NAME=livingwebsite
 
 REM MySQL Query
 set QUERY=SELECT * FROM Object;
