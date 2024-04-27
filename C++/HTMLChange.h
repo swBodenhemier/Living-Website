@@ -8,13 +8,17 @@
 
 using namespace std;
 
-//Global Variables
-static const int MAX_NAV_OPTIONS =  6;
-static const string navOptions[MAX_NAV_OPTIONS] = { "SCP-081", "SCP-8012", "SCP-1990", "SCP-2161", "SCP-999", "SCP-2006" };
-static const string navLinks[MAX_NAV_OPTIONS] = { "scp_081_page.html", "scp_8012_page.html", "scp_1990_page.html", "scp_2161_page.html", "scp_999_page.html", "scp_2006_page.html" };
-static const int MAX_CODE_LINES = 500;
-
 //Forward Declare Functions
-bool changeNavBar(fstream *HTMLFile, int priorityList[], string fileName);
+bool changeNavBar(fstream *HTMLFile, int priorityList[], string newFileLocation, string fileName);
+int findNavLine(string code[], int maxLines);
+int findMaxNavOptions(string code[], int start, int end);
+int setItemSpotsForNavOptions(string code[], int* itemSpots, int start, int end, int maxOptions);
+int setItemSpotsForNames(string code[], int* itemSpots, string navOptions[], int start, int end, int maxOptions);
+int setItemSpotsForLinks(string code[], int* itemSpots, string navLinks[], int start, int end, int maxOpions);
+void fillNavOptions(string code[], int itemSpots[], string* navOptions, int maxOptions);
+void fillNavLinks(string code[], int itemSpots[], string* navLinks, int maxOptions);
+void changeLinkNames(string* code, int itemSpots[], int priorityList[], string navOptions[], int maxOptions);
+void changeLinks(string* code, int itemSpots[], int priorityList[], string navLinks[], int maxOptions);
+bool copyToNewHTML(string code[], string fileLocation, string fileName, int end);
 
 #endif

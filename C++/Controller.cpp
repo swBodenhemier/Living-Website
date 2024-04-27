@@ -1,87 +1,102 @@
 //Import Libraries
-#include "HTMLChange.h"
-#include "UploadToGitHub.h"
-#include <iostream>
-#include <fstream>
-#include <string>
+#include "Controller.h"
 
-using namespace std;
-
-bool testingHTMLChange()
+bool HTMLChangeExecute(int* priorityList, string locationOfFolders)
 {
 	//Initalize Variables
 	fstream HTMLFile = fstream();
-	int priorityList[6] = { 5,4,3,2,1,0 }, count;
-	string filesToOpen[7] = {"../../../HTML Files/scp_main_page.html", "../../../HTML Files/scp_081_page.html", "../../../HTML Files/scp_999_page.html",
-							"../../../HTML Files/scp_1990_page.html", "../../../HTML Files/scp_2006_page.html",  "../../../HTML Files/scp_2161_page.html",
-							"../../../HTML Files/scp_8012_page.html"};
+	int count;
+	string filesToOpen[7] = {"HTMLFiles/scp_main_page.html", "HTMLFiles/scp_081_page.html", "HTMLFiles/scp_999_page.html",
+							"HTMLFiles/scp_1990_page.html", "HTMLFiles/scp_2006_page.html",  "HTMLFiles/scp_2161_page.html",
+							"HTMLFiles/scp_8012_page.html"};
 
 	//Loop until no more files
 	for (count = 0; count < 7; count++)
 	{
 		try
 		{
-			HTMLFile.open(filesToOpen[count]);
+			HTMLFile.open(locationOfFolders + filesToOpen[count]);
 
-			if (!changeNavBar(&HTMLFile, priorityList, filesToOpen[count].substr(20, string::npos)))
+			if (!HTMLFile.is_open())
+			{
+				throw runtime_error("Error: file failed to open at location \"" + locationOfFolders + filesToOpen[count] + "\"");
+			}
+
+			if (!changeNavBar(&HTMLFile, priorityList, locationOfFolders + "deployed_website", filesToOpen[count].substr(9, string::npos)))
 			{
 				HTMLFile.close();
-				throw count;
+				throw runtime_error("Run " + to_string(count) + " failed: " + locationOfFolders + filesToOpen[count]);
 			}
 
 			HTMLFile.close();
 		}
-		catch (int number)
+		catch (runtime_error e)
 		{
-			cout << "Run " << number << " failed: " << filesToOpen[number] << endl;
+			cout << e.what() << endl;
 		}
 	}
 
 	return true;
 }
 
-/*
-bool testingGitHub()
+bool databaseExecute(int** priorityList, string locationOfFolders)
 {
 	//Initalize Variables
-	char localRepo[] = "F:\Desktop\CS 386 Project\deployed_website\.git";
-	bool success = false;
+	return organizeItems(locationOfFolders + "Database Files/mysql_ac_nau_edu_3306.csv", locationOfFolders + "HTMLFiles/scp_main_page.html", priorityList);
+}
 
-	cout << "Setup git\n";
+void setup()
+{
+	//Startup/setup
+	system("setup.bat> NUL");
+}
 
-	if (!setup())
+void pushToGit()
+{
+	system("updateWebsite.bat > NUL");
+}
+
+bool run()
+{
+	//Initialize Variables
+	int* priorityList = NULL;
+
+	//Run setup
+	setup();
+
+	if (!databaseExecute(&priorityList, ""))
 	{
 		return false;
 	}
 
-	cout << "Setting up repo.\n";
-
-	//Connect to local repo
-	if (!connectToRepository(localRepo))
-	{
-		return false;
-	}
-	
-	cout << "Pushing files to repo.\n";
-
-	//Push files
-	if (!pushFiles())
+	if (!HTMLChangeExecute(priorityList, ""))
 	{
 		return false;
 	}
 
-	cout << "Freeing data\n";
+	//pushToGit();
 
-	//Free data
-	closeRepository();
+	delete[] priorityList;
 
 	return true;
 }
-*/
 
-int main()
+bool runTests(string locationOfFolders)
 {
 	//Initialize Variables
+	int* priorityList= NULL;
 
-	return testingHTMLChange();
+	if (!databaseExecute(&priorityList, locationOfFolders))
+	{
+		return false;
+	}
+
+	if (!HTMLChangeExecute(priorityList, locationOfFolders))
+	{
+		return false;
+	}
+
+	delete[] priorityList;
+
+	return true;
 }
