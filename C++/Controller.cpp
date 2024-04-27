@@ -19,7 +19,7 @@ bool HTMLChangeExecute(int* priorityList, string locationOfFolders)
 
 			if (!HTMLFile.is_open())
 			{
-				throw runtime_error("Error: file failed to open at location " + locationOfFolders + filesToOpen[count] + ".");
+				throw runtime_error("Error: file failed to open at location \"" + locationOfFolders + filesToOpen[count] + "\"");
 			}
 
 			if (!changeNavBar(&HTMLFile, priorityList, locationOfFolders + "deployed_website", filesToOpen[count].substr(9, string::npos)))
@@ -42,18 +42,18 @@ bool HTMLChangeExecute(int* priorityList, string locationOfFolders)
 bool databaseExecute(int** priorityList, string locationOfFolders)
 {
 	//Initalize Variables
-	return organizeItems(locationOfFolders + "Databae Files/mysql_ac_nau_edu_3306.csv", locationOfFolders + "HTML Files/scp_main_page.html", priorityList);
+	return organizeItems(locationOfFolders + "Database Files/mysql_ac_nau_edu_3306.csv", locationOfFolders + "HTMLFiles/scp_main_page.html", priorityList);
 }
 
 void setup()
 {
 	//Startup/setup
-	system("setup.cmd > NUL");
+	system("setup.bat> NUL");
 }
 
 void pushToGit()
 {
-	system("updateWebsite.cmd > NUL");
+	system("updateWebsite.bat > NUL");
 }
 
 bool run()
@@ -64,27 +64,17 @@ bool run()
 	//Run setup
 	setup();
 
-	try
+	if (!databaseExecute(&priorityList, ""))
 	{
-		databaseExecute(&priorityList, "");
-	}
-	catch (string e)
-	{
-		cout << e << endl;
 		return false;
 	}
 
-	try
+	if (!HTMLChangeExecute(priorityList, ""))
 	{
-		HTMLChangeExecute(priorityList, "");
-	}
-	catch(string e)
-	{
-		cout << e << endl;
 		return false;
 	}
 
-	pushToGit();
+	//pushToGit();
 
 	delete[] priorityList;
 
@@ -94,14 +84,14 @@ bool run()
 bool runTests(string locationOfFolders)
 {
 	//Initialize Variables
-	int* priorityList = NULL;
+	int* priorityList= NULL;
 
-	if (HTMLChangeExecute(priorityList, locationOfFolders))
+	if (!databaseExecute(&priorityList, locationOfFolders))
 	{
 		return false;
 	}
 
-	if (HTMLChangeExecute(priorityList, locationOfFolders))
+	if (!HTMLChangeExecute(priorityList, locationOfFolders))
 	{
 		return false;
 	}

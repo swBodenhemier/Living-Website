@@ -25,10 +25,15 @@ bool organizeItems(string fileLocation, string HTMLFileLocation, int** priorityL
 		databaseFile.open(fileLocation);
 
 		//Check if each file is open
-		if (!HTMLFile.is_open() || !databaseFile.is_open())
+		if (!databaseFile.is_open())
 		{
 			//Print error statement and return false
-			throw runtime_error("Error: file failed to open at location " + fileLocation + HTMLFileLocation + ".");
+			throw runtime_error("Error: file failed to open at location \"" + fileLocation + "\"");
+		}
+		else if (!HTMLFile.is_open())
+		{
+			//Print error statement and return false
+			throw runtime_error("Error: file failed to open at location \"" + HTMLFileLocation + "\"");
 		}
 	}
 	catch (runtime_error e)

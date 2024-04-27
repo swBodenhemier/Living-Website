@@ -40,8 +40,6 @@ bool changeNavBar(fstream* HTMLFile, int priorityList[], string newFileLocation,
 		//Store line into buffer
 		getline(*HTMLFile, ReplacementCode[numLines]);
 
-		cout << ReplacementCode[numLines] << endl;
-
 		//Increase number of lines by 1
 		numLines += 1;
 	}
@@ -82,70 +80,34 @@ bool changeNavBar(fstream* HTMLFile, int priorityList[], string newFileLocation,
 			throw runtime_error("Error: Failed to find all navigation options");
 
 		}
-	}
-	catch (runtime_error e)
-	{
-		cout << e.what() << endl;
-		delete[] ReplacementCode;
-		delete[] navOptions;
-		delete[] navLinks;
-		delete[] itemSpots;
-		return false;
-	}
 
-	//Fill in navOptions with names of the links
-	fillNavOptions(ReplacementCode, itemSpots, navOptions, maxNavOptions);
+		//Fill in navOptions with names of the links
+		fillNavOptions(ReplacementCode, itemSpots, navOptions, maxNavOptions);
 
-	//Fill in navLinks with links of each navigation option
-	fillNavLinks(ReplacementCode, itemSpots, navLinks, maxNavOptions);
+		//Fill in navLinks with links of each navigation option
+		fillNavLinks(ReplacementCode, itemSpots, navLinks, maxNavOptions);
 
-	//Fill in itemSpots will all item line locations and check for all items filled
-	try
-	{
+		//Fill in itemSpots will all item line locations and check for all items filled
 		if (setItemSpotsForNames(ReplacementCode, &itemSpots[0], navOptions, navSpot, numLines, maxNavOptions) < maxNavOptions)
 		{
 			//Throw error
 			throw runtime_error("Error: Failed to find all Navigation items");
 		}
-	}
-	catch (runtime_error e)
-	{
-		cout << e.what() << endl;
-		delete[] ReplacementCode;
-		delete[] navOptions;
-		delete[] navLinks;
-		delete[] itemSpots;
-		return false;
-	}
 
-	//Change names of items based on the priorityList
-	changeLinkNames(ReplacementCode, itemSpots, priorityList, navOptions, maxNavOptions);
+		//Change names of items based on the priorityList
+		changeLinkNames(ReplacementCode, itemSpots, priorityList, navOptions, maxNavOptions);
 
-	//Fill in itemSpots with all link line locations and check for all items filled
-	try
-	{
+		//Fill in itemSpots with all link line locations and check for all items filled
 		if (setItemSpotsForLinks(ReplacementCode, &itemSpots[0], navLinks, navSpot, numLines, maxNavOptions) < maxNavOptions)
 		{
 			//Print error statement and return error
 			throw runtime_error("Error: Failed to find all Link items");
 		}
-	}
-	catch (runtime_error e)
-	{
-		cout << e.what() << endl;
-		delete[] ReplacementCode;
-		delete[] navOptions;
-		delete[] navLinks;
-		delete[] itemSpots;
-		return false;
-	}
 	
-	//Change links of items based on the priorityList
-	changeLinks(ReplacementCode, itemSpots, priorityList, navOptions, maxNavOptions);
+		//Change links of items based on the priorityList
+		changeLinks(ReplacementCode, itemSpots, priorityList, navOptions, maxNavOptions);
 	
-	//Apply changes to new HTML Document
-	try
-	{
+		//Apply changes to new HTML Document
 		if (!copyToNewHTML(ReplacementCode, newFileLocation, fileName, numLines))
 		{
 			//Print error statement
@@ -392,11 +354,6 @@ void changeLinkNames(string* code, int itemSpots[], int priorityList[], string n
 
 		//Reset count
 		repeatCount = 0;
-
-		//Error fixing
-		cout << code[itemSpots[currentItem]] << endl
-			<< navOptions[currentItem] << endl
-			<< charSpot << endl;
 
 		//Replace name in string
 		code[itemSpots[currentItem]].replace(charSpot + 1, navOptions[currentItem].length(), navOptions[priorityList[currentItem]]); //ERROR IN THIS LINE
