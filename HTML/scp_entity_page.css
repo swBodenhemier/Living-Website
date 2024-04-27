@@ -59,7 +59,6 @@ aside {
 }
 
 section {
-   display: inline-block;
    text-align: center;
    block-size: 500px;
    width: 70%;

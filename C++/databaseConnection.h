@@ -17,3 +17,4 @@ int getWeightOfName(string databaseInfo, string itemName);
 void sortList(int* list, int end);
 
 #endif // !DATABASECONNECTION_H
+=======
