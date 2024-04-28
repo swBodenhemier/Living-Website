@@ -82,6 +82,7 @@ bool compareTestCase(string locationOfFiles, string locationOfValidateFiles)
 }
 
 // Main class to run all test cases
+/*
 int main()
 {
 	int testNumber;
@@ -103,3 +104,4 @@ int main()
 	//Return successful run
 	return 0;
 }
+*/

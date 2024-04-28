@@ -26,27 +26,24 @@ bool changeNavBar(fstream* HTMLFile, int priorityList[], string newFileLocation,
 			//return fail
 			throw runtime_error("Error: file failed to open.");
 		}
-	}
-	catch (runtime_error e)
-	{
-		cout << e.what() << endl;
-		delete[] ReplacementCode;
-		return false;
-	}
 
-	//Copy entire stream into buffer line by line
-	while (HTMLFile->peek() != EOF)
-	{
-		//Store line into buffer
-		getline(*HTMLFile, ReplacementCode[numLines]);
+		//Check if file is empty
+		if (HTMLFile->get() == EOF)
+		{
+			throw runtime_error("Error: file is empty.");
+		}
 
-		//Increase number of lines by 1
-		numLines += 1;
-	}
+		//Copy entire stream into buffer line by line
+		while (HTMLFile->peek() != EOF)
+		{
+			//Store line into buffer
+			getline(*HTMLFile, ReplacementCode[numLines]);
 
-	//Find where <nav> is located at
-	try
-	{
+			//Increase number of lines by 1
+			numLines += 1;
+		}
+
+		//Find where <nav> is located at
 		navSpot = findNavLine(ReplacementCode, numLines);
 		//Check if failed to find
 		if (navSpot == -1)
@@ -97,13 +94,6 @@ bool changeNavBar(fstream* HTMLFile, int priorityList[], string newFileLocation,
 		//Change names of items based on the priorityList
 		changeLinkNames(ReplacementCode, itemSpots, priorityList, navOptions, maxNavOptions);
 
-		//Fill in itemSpots with all link line locations and check for all items filled
-		if (setItemSpotsForLinks(ReplacementCode, &itemSpots[0], navLinks, navSpot, numLines, maxNavOptions) < maxNavOptions)
-		{
-			//Print error statement and return error
-			throw runtime_error("Error: Failed to find all Link items");
-		}
-	
 		//Change links of items based on the priorityList
 		changeLinks(ReplacementCode, itemSpots, priorityList, navOptions, maxNavOptions);
 	
@@ -242,37 +232,6 @@ int setItemSpotsForNames(string code[], int* itemSpots, string navOptions[], int
 	return currentItem;
 }
 
-int setItemSpotsForLinks(string code[], int* itemSpots, string navLinks[], int start, int end, int maxOpions)
-{
-	//Initliaize Variables
-	int currentItem = 0, itemLocaiton = start;
-
-	//Change the links
-	//Loop through buffer finding each spot for the links
-	while (currentItem < maxOpions && itemLocaiton < end)
-	{
-		//Check for link in line
-		if (code[itemLocaiton].find(navLinks[currentItem]) != string::npos)
-		{
-			//Set itemSpots to current location
-			itemSpots[currentItem] = itemLocaiton;
-
-			//Reset itemLocation
-			itemLocaiton = start;
-
-			//Increase currentItem
-			currentItem += 1;
-		}
-		//Increase by 1 and loop
-		else
-		{
-			itemLocaiton += 1;
-		}
-	}
-
-	return currentItem;
-}
-
 void fillNavOptions(string code[], int itemSpots[], string* navOptions, int maxOptions)
 {
 	//Initialize Variables
@@ -310,16 +269,19 @@ void fillNavOptions(string code[], int itemSpots[], string* navOptions, int maxO
 void fillNavLinks(string code[], int itemSpots[], string* navLinks, int maxOptions)
 {
 	//Initialize Variables
-	int currentItem = 0, charStart = 0, charEnd = 0;
+	int currentItem = 0, charStart = 0, charEnd = 0, repeatCount = 0;
 
 	//Fill in the links of each nav option into navLinks
 	while (currentItem < maxOptions)
 	{
-		//Find location of href
-		charStart = code[itemSpots[currentItem]].find("href");
+		//Find location of 2nd =
+		while (repeatCount != 2)
+		{
+			charStart = code[itemSpots[currentItem]].find("=", charStart + 1);
+			repeatCount++;
+		}
 
-		//Find location of first "
-		charStart = code[itemSpots[currentItem]].find("\"", charStart);
+		repeatCount = 0;
 
 		//Find end of link
 		charEnd = code[itemSpots[currentItem]].find("\"", charStart + 1);
@@ -369,16 +331,31 @@ void changeLinkNames(string* code, int itemSpots[], int priorityList[], string n
 void changeLinks(string* code, int itemSpots[], int priorityList[], string navLinks[], int maxOptions)
 {
 	//Initiliaze Variables
-	int currentItem = 0, charSpot = 0;
+	int currentItem = 0, charSpot = 0, repeatCount = 0;
 
 	//Change the links
 	while (currentItem < maxOptions)
 	{
-		//Find start
-		charSpot = code[itemSpots[currentItem]].find("href=", charSpot + 1) + 6;
+		//Find start 2nd =
+		while (repeatCount != 2)
+		{
+			charSpot = code[itemSpots[currentItem]].find('=', charSpot + 1);
+			repeatCount++;
+		}
+
+		repeatCount = 0;
+
+		//Check if failed to find '='
+		if (charSpot == -1)
+		{
+			//Find locaiton of "link"
+			charSpot = code[itemSpots[currentItem]].find("link");
+			code[itemSpots[currentItem]].replace(charSpot, 4, "link=");
+			charSpot += 4;
+		}
 
 		//Replace link in string
-		code[itemSpots[currentItem]].replace(charSpot, navLinks[currentItem].length(), navLinks[priorityList[currentItem]]);
+		code[itemSpots[currentItem]].replace(charSpot + 1, navLinks[currentItem].length(), navLinks[priorityList[currentItem]]);
 
 		//Reset Start
 		charSpot = 0;

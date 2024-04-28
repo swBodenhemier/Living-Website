@@ -8,7 +8,6 @@
 using namespace std;
 
 //Forward declare functions
-bool downloadItems(string fileLoaction);
 bool organizeItems(string fileLocation, string HTMLFileLocation, int** priorityList);
 int findMaxItems(ifstream* databaseFile, string* databaseInfo);
 bool findNav(istream* HTMLFile);
@@ -17,4 +16,3 @@ int getWeightOfName(string databaseInfo, string itemName);
 void sortList(int* list, int end);
 
 #endif // !DATABASECONNECTION_H
-=======

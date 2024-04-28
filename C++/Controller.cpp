@@ -42,7 +42,7 @@ bool HTMLChangeExecute(int* priorityList, string locationOfFolders)
 bool databaseExecute(int** priorityList, string locationOfFolders)
 {
 	//Initalize Variables
-	return organizeItems(locationOfFolders + "Database Files/mysql_ac_nau_edu_3306.csv", locationOfFolders + "HTMLFiles/scp_main_page.html", priorityList);
+	return organizeItems(locationOfFolders + "Database Files/output.csv", locationOfFolders + "HTMLFiles/scp_main_page.html", priorityList);
 }
 
 void setup()

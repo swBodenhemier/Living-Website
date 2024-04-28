@@ -3,12 +3,6 @@
 
 using namespace std;
 
-
-bool downloadItems(string fileLoaction)
-{
-	return false;
-}
-
 bool organizeItems(string fileLocation, string HTMLFileLocation, int** priorityList)
 {
 	//Initialize Variables
@@ -35,19 +29,26 @@ bool organizeItems(string fileLocation, string HTMLFileLocation, int** priorityL
 			//Print error statement and return false
 			throw runtime_error("Error: file failed to open at location \"" + HTMLFileLocation + "\"");
 		}
-	}
-	catch (runtime_error e)
-	{
-		cout << e.what() << endl;
-		return false;
-	}
 
-	maxItems = findMaxItems(&databaseFile, &databaseInfo);
-	updateList = new int[maxItems];
+		//Check for empty file
+		if (databaseFile.get() == EOF)
+		{
+			throw runtime_error("Error: Empty file at location \"" + fileLocation + "\"");
+		}
+		else if (HTMLFile.get() == EOF)
+		{
+			throw runtime_error("Error: Empty file at location \"" + HTMLFileLocation + "\"");
+		}
 
-	//Loop until each item in priorityList is filled
-	try
-	{
+		maxItems = findMaxItems(&databaseFile, &databaseInfo);
+		if (maxItems == -1)
+		{
+			throw runtime_error("Error: Failed to get total items.");
+		}
+	
+		updateList = new int[maxItems];
+
+		//Loop until each item in priorityList is filled
 		if (!findNav(&HTMLFile))
 		{
 			//Print error statement and return false
@@ -122,7 +123,7 @@ bool findNav(istream* HTMLFile)
 string getItemName(istream* HTMLFile)
 {
 	//Initialize Variables
-	int repeat = 0, beginning, end;
+	int repeat = 0, beginning = 0, end, repeatCount = 0;
 	string line;
 
 	//Find first instance of <a
@@ -135,8 +136,11 @@ string getItemName(istream* HTMLFile)
 
 	//Find and copy name of link
 	//Find beginning
-	beginning = line.find("<a");
-	beginning = line.find('>', beginning);
+	while (repeatCount != 2)
+	{
+		beginning = line.find(">", beginning + 1);
+		repeatCount++;
+	}
 
 	//Find end
 	end = line.find('<', beginning);
@@ -155,8 +159,8 @@ int getWeightOfName(string databaseInfo, string itemName)
 	stringstream buffer;
 	
 	weight = databaseInfo.find(itemName);
-	weight = databaseInfo.find('"', weight + itemName.length() + 1);
-	end = databaseInfo.find('"', weight + 1);
+	weight = databaseInfo.find(',', weight);
+	end = databaseInfo.find('\n', weight);
 	temp = databaseInfo.substr(weight + 1, end - weight - 1);
 	buffer << temp;
 	buffer >> weight;
@@ -167,27 +171,34 @@ int getWeightOfName(string databaseInfo, string itemName)
 void sortList(int* list, int end)
 {
 	//Initialize Variables
-	int count, compare, weight = end - 1;
-	int* newList = new int[end];
+	int count, compare, weight = 0, loop;
+	int* newList = new int[end] {0};
+	bool* weightAssigned = new bool[end] { false };
 
 	//Loop through the list from beginning to end
 	for (count = 0; count < end; count++)
 	{
+
 		//Inner loop to compare the value to the rest of the items
 		for (compare = 0; compare < end; compare++)
 		{
 			//Check if compare and count not the same and if value at count is smaller than compare
-			 if (count != compare && list[count] > list[compare])
+			 if (list[count] < list[compare] || (list[count] == list[compare] && count > compare))
 			 {
-				 weight -= 1;
+				 weight++;
 			 }
 		}
 
-		//Set counts value to the weight
-		newList[count] = weight;
+		while (weightAssigned[weight])
+		{
+			weight++;
+		}
+
+		newList[weight] = count;
+		weightAssigned[weight] = true;
 
 		//Reset weight based on where the loop is
-		weight = end - 1;
+		weight = 0;
 	}
 	
 	//Deep copy list
@@ -197,4 +208,5 @@ void sortList(int* list, int end)
 	}
 
 	delete[] newList;
+	delete[]weightAssigned;
 }

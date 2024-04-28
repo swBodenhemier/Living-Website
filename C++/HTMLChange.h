@@ -14,7 +14,6 @@ int findNavLine(string code[], int maxLines);
 int findMaxNavOptions(string code[], int start, int end);
 int setItemSpotsForNavOptions(string code[], int* itemSpots, int start, int end, int maxOptions);
 int setItemSpotsForNames(string code[], int* itemSpots, string navOptions[], int start, int end, int maxOptions);
-int setItemSpotsForLinks(string code[], int* itemSpots, string navLinks[], int start, int end, int maxOpions);
 void fillNavOptions(string code[], int itemSpots[], string* navOptions, int maxOptions);
 void fillNavLinks(string code[], int itemSpots[], string* navLinks, int maxOptions);
 void changeLinkNames(string* code, int itemSpots[], int priorityList[], string navOptions[], int maxOptions);
