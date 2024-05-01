@@ -6,6 +6,11 @@
 
 using namespace std;
 
+//Main Function
+//Objectives: Will manage when the program will run
+//Prereqs: None
+//Postreq: HTML files are changed and uploaded
+//Notes: Can be adjusted to run as freaquently as the user wants
 int main()
 {
 	//When program is initalized run the task once then loop

@@ -124,6 +124,12 @@ bool changeNavBar(fstream* HTMLFile, int priorityList[], string newFileLocation,
 	return true;
 }
 
+//Find Navigation Line Function
+//Objectives: The code will search through the HTML code and find what line the <nav> is located on.
+//Prereqs: All code has been sorted into an array divided by lines, and max lines is the max amount of
+//		   lines inside code array.
+//Postreq: Returns an int that shows the line location of <nav>
+//Notes: None
 int findNavLine(string code[], int maxLines)
 {
 	//Initliaze Variables
@@ -155,6 +161,13 @@ int findNavLine(string code[], int maxLines)
 	return linePosition;
 }
 
+//Find maxOptions Function
+//Objectives: The code will search through the HTML code and find all the total amount of navigation
+//			   bar options.
+//Prereqs: All code has been sorted into an array divided by lines, and start represents the location of
+//		   <nav> and end is the max lines in code array.
+//Postreq: Returns an int of the total amount of navigaiton bar options
+//Notes: None
 int findMaxNavOptions(string code[], int start, int end)
 {
 	//Initialize Variables
@@ -162,7 +175,7 @@ int findMaxNavOptions(string code[], int start, int end)
 	int count = 0;
 
 	//Find how many <a... there are until </nav> is reached
-	while (code[currentLine].find("</nav>") == string::npos)
+	while (code[currentLine].find("</nav>") == string::npos && currentLine < end)
 	{
 		//Check if <a is located on this line
 		if (code[currentLine].find("<a") != string::npos)
@@ -175,9 +188,18 @@ int findMaxNavOptions(string code[], int start, int end)
 		currentLine += 1;
 	}
 
-return count;
+	return count;
 }
 
+//Set Item Spots Nav Options Function
+//Objectives: The code will search through the HTML code and will set itemSpots array with tthe line
+//			  location of each navigation option inside it.
+//Prereqs: All code has been sorted into an array divided by lines, and start represents the location of
+//		   <nav> and end is the max lines in code array, itemSpots array is initalized and maxOptions is
+//		   set to the max amount of naviagation options
+//Postreq: Returns an int of the number of options it successfully set and itemSpots is set to each line
+//		   location of each option
+//Notes: None
 int setItemSpotsForNavOptions(string code[], int* itemSpots, int start, int end, int maxOptions)
 {
 	//Initialize Variables
@@ -202,6 +224,15 @@ int setItemSpotsForNavOptions(string code[], int* itemSpots, int start, int end,
 	return count;
 }
 
+//Set Item Spots Nav Options Function
+//Objectives: The code will search through the HTML code and will set itemSpots array with the line
+//			  location of each navigation option inside it.
+//Prereqs: All code has been sorted into an array divided by lines, and start represents the location of
+//		   <nav> and end is the max lines in code array, itemSpots array is initalized and maxOptions is
+//		   set to the max amount of naviagation options, navoptions array has been filled in
+//Postreq: Returns an int of the number of options it successfully set and itemSpots is set to each line
+//		   location of each option
+//Notes: None
 int setItemSpotsForNames(string code[], int* itemSpots, string navOptions[], int start, int end, int maxOptions)
 {
 	//Initialize Variables
@@ -232,6 +263,13 @@ int setItemSpotsForNames(string code[], int* itemSpots, string navOptions[], int
 	return currentItem;
 }
 
+//Fill navOptions Function
+//Objectives: The code will search through the HTML code and will fill in navOptions with the name of
+//			  each navigation option available.
+//Prereqs: All code has been sorted into an array divided by lines, itemSpots array is filled in, navOptions
+//		   is initialized and maxOptions is set to the max amount of naviagation options.
+//Postreq: Fills in the navOptions array
+//Notes: None
 void fillNavOptions(string code[], int itemSpots[], string* navOptions, int maxOptions)
 {
 	//Initialize Variables
@@ -266,6 +304,13 @@ void fillNavOptions(string code[], int itemSpots[], string* navOptions, int maxO
 	}
 }
 
+//Fill navLinks Function
+//Objectives: The code will search through the HTML code and will fill in navLinks with the link of
+//			  each navigation option available.
+//Prereqs: All code has been sorted into an array divided by lines, itemSpots array is filled in, navlinks
+//		   is initialized and maxOptions is set to the max amount of naviagation options.
+//Postreq: Fills in the navLinks array
+//Notes: None
 void fillNavLinks(string code[], int itemSpots[], string* navLinks, int maxOptions)
 {
 	//Initialize Variables
@@ -298,6 +343,14 @@ void fillNavLinks(string code[], int itemSpots[], string* navLinks, int maxOptio
 	}
 }
 
+//Change Link Names Function
+//Objectives: The code will search through the HTML code and will change the code array to reflect the priority
+//			  list.
+//Prereqs: All code has been sorted into an array divided by lines, itemSpots array is filled in, priorityList
+//		   navOptions is filled in is filled in with link names and maxOptions is set to the max amount of
+//		   naviagation options.
+//Postreq: Adjust the code array to reflect the priorityList array's order
+//Notes: None
 void changeLinkNames(string* code, int itemSpots[], int priorityList[], string navOptions[], int maxOptions)
 {
 	//Initialize Variables
@@ -328,6 +381,14 @@ void changeLinkNames(string* code, int itemSpots[], int priorityList[], string n
 	}
 }
 
+//Change links Function
+//Objectives: The code will search through the HTML code and will change the code array to reflect the priority
+//			  list.
+//Prereqs: All code has been sorted into an array divided by lines, itemSpots array is filled in, priorityList
+//		   navLinks is filled in is filled in with links and maxOptions is set to the max amount of
+//		   naviagation options.
+//Postreq: Adjust the code array to reflect the priorityList array's order
+//Notes: None
 void changeLinks(string* code, int itemSpots[], int priorityList[], string navLinks[], int maxOptions)
 {
 	//Initiliaze Variables
@@ -365,6 +426,12 @@ void changeLinks(string* code, int itemSpots[], int priorityList[], string navLi
 	}
 }
 
+//Copy to New HTML File Function
+//Objectives: The code will copy each line in code array to a new string in a different file location
+//Prereqs: All code has been adjusted into an array divided by lines, fileLocation has the location of
+//		   the new file, fileName is the new file name, end represent the max lines in the code array.
+//Postreq: Copies all of code array into new file and returns true or false if fails.
+//Notes: None
 bool copyToNewHTML(string code[], string fileLocation, string fileName, int end)
 {
 	//Initialize Variables

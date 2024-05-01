@@ -3,6 +3,11 @@
 
 using namespace std;
 
+//Print Run Case Function
+//Objectives: Will print to console weather the test cases have succeeded or not
+//Prereqs: Files have been compared and will tell if true or false.
+//Postreq: Console statement has been printed with the end result.
+//Notes: None
 void printRunCase(int number, bool returnCase)
 {
 	cout << "Test Case #" << number << " executed with result: ";
@@ -18,6 +23,12 @@ void printRunCase(int number, bool returnCase)
 	}
 }
 
+//Compare Files Function
+//Objectives: Will compare character by character to make sure each file is the same
+//			  as the expected output.
+//Prereqs: Files are accessable and new HTML files have been created
+//Postreq: returns true if files are the same or false if not
+//Notes: None
 bool compareFiles(ifstream* file1, ifstream* file2)
 {
 	//Check if each file is open
@@ -38,6 +49,11 @@ bool compareFiles(ifstream* file1, ifstream* file2)
 	return true;
 }
 
+//Comapre Test Results Function
+//Objectives: Will compare the output of the code to the expected output
+//Prereqs: Files are accessable and new HTML files have been created
+//Postreq: returns true if files are the same or false if not
+//Notes: None
 bool compareTestCase(string locationOfFiles, string locationOfValidateFiles)
 {
 	//Initialize Vairables
@@ -81,7 +97,11 @@ bool compareTestCase(string locationOfFiles, string locationOfValidateFiles)
 	return true;
 }
 
-// Main class to run all test cases
+//TEST Main Function
+//Objectives: Will manage when the program will run
+//Prereqs: None
+//Postreq: HTML files are changed and compared to the expected output
+//Notes: ONLY USED FOR TEST CASES!!!!
 /*
 int main()
 {
